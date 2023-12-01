@@ -11,7 +11,6 @@
   )
 , mkGoEnv ? pkgs.mkGoEnv
 , gomod2nix ? pkgs.gomod2nix
-, pre-commit-hooks
 , ...
 }:
 
