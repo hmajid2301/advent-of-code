@@ -13,7 +13,7 @@
 }:
 
 buildGoApplication {
-  pname = "aoc-2023";
+  pname = "advent_of_code";
   version = "0.1";
   pwd = ./.;
   src = ./.;
