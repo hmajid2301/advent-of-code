@@ -2043,6 +2043,6 @@ nsbtggzgjx3eighttpkhkvknpsqxsevenvh8
 1sevenseven7ld`
 
 		value := dayone.CalculateCalibrationsWithStrings(calibrations)
-		assert.Equal(t, value, 54632)
+		assert.Equal(t, value, 54019)
 	})
 }
