@@ -1,2 +1,3 @@
-# aoc-2023
-Advent of code for 2023 in Golang
+# Advent of Code
+
+My attempts at the Advent of code. Mostly a bit of fun, don't take this code too seriously. Usually my first solution.
