@@ -45,6 +45,7 @@ func CalculateCalibrationsWithStrings(calibrations string) int {
 		i := 0
 		digits := []int{}
 
+		// TODO: simplify this mess
 		for i < len(line) {
 			char := string(line[i])
 			if lookups, ok := numbers[char]; ok {
