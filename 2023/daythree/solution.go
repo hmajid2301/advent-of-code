@@ -1,6 +1,7 @@
 package daythree
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -29,9 +30,41 @@ func CalculatePartNumSum(schematics string) int {
 		digits := []int{}
 		var isSymbolAdjacent bool
 		for j, col := range row {
-			if v, err := strconv.Atoi(col); err == nil {
+			fmt.Print(i)
+			fmt.Println("")
+			fmt.Print(j)
+			fmt.Println("")
+			fmt.Println("")
+
+			v, err := strconv.Atoi(col)
+			if err == nil {
 				digits = append(digits, v)
-			} else {
+				adjacentCoords := []Coord{
+					{x: i + 1, y: j},
+					{x: i - 1, y: j},
+					{x: i, y: j - 1},
+					{x: i, y: j + 1},
+					{x: i + 1, y: j + 1},
+					{x: i - 1, y: j + 1},
+					{x: i + 1, y: j - 1},
+					{x: i - 1, y: j - 1},
+				}
+				for _, coord := range adjacentCoords {
+					if coord.x < 0 || coord.y < 0 {
+						continue
+					}
+					if coord.y+1 > len(schematicsArray) || coord.x+1 > len(row) {
+						continue
+					}
+
+					item := schematicsArray[coord.x][coord.y]
+					if _, ok := symbols[item]; ok {
+						isSymbolAdjacent = true
+						break
+					}
+				}
+			}
+			if err != nil || j+1 == len(row) {
 				if isSymbolAdjacent {
 					total += sliceToInt(digits)
 				}
@@ -39,30 +72,6 @@ func CalculatePartNumSum(schematics string) int {
 				isSymbolAdjacent = false
 			}
 
-			adjacentCoords := []Coord{
-				{x: i + 1, y: j},
-				{x: i - 1, y: j},
-				{x: i, y: j - 1},
-				{x: i, y: j + 1},
-				{x: i + 1, y: j + 1},
-				{x: i - 1, y: j + 1},
-				{x: i + 1, y: j - 1},
-				{x: i - 1, y: j - 1},
-			}
-			for _, coord := range adjacentCoords {
-				if coord.x < 0 {
-					continue
-				}
-				if coord.y > len(row) {
-					continue
-				}
-
-				item := schematicsArray[coord.x][coord.y]
-				if _, ok := symbols[item]; ok {
-					isSymbolAdjacent = true
-					break
-				}
-			}
 		}
 	}
 
