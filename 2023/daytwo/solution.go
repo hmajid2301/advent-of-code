@@ -10,6 +10,7 @@ var MAX_RED_CUBES = 12
 var MAX_BLUE_CUBES = 14
 var MAX_GREEN_CUBES = 13
 
+// TODO: refacor this!
 func CalculatePossibleGames(results string) int {
 
 	lines := strings.Split(results, "\n")
