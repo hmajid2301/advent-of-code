@@ -1,10 +1,9 @@
 package daythree
 
 import (
+	"maps"
 	"strconv"
 	"strings"
-
-	"golang.org/x/exp/maps"
 )
 
 type Coord struct {
@@ -99,7 +98,7 @@ func CalculateGearRatio(schematics string) int {
 			if err == nil {
 				digits = append(digits, v)
 				newPossibleGears := getPotentialGearCoords(Coord{x: i, y: j}, schematicsArray, row)
-				adjacentAsterisk = maps.Copy(adjacentAsterisk, newPossibleGears)
+				maps.Copy(adjacentAsterisk, newPossibleGears)
 			}
 			if err != nil || j+1 == len(row) {
 				for asteriskCoord := range adjacentAsterisk {
