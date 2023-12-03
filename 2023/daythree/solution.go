@@ -86,7 +86,7 @@ func CalculateGearRatio(schematics string) int {
 	a := map[Coord][]int{}
 	for i, row := range schematicsArray {
 		digits := []int{}
-		adjacentSymbol := []Coord{}
+		adjacentSymbol := map[Coord]struct{}{}
 
 		for j, col := range row {
 			v, err := strconv.Atoi(col)
@@ -112,25 +112,31 @@ func CalculateGearRatio(schematics string) int {
 
 					item := schematicsArray[coord.x][coord.y]
 					if item == "*" {
-						adjacentCoords = append(adjacentCoords, coord)
+						adjacentSymbol[coord] = struct{}{}
 					}
 				}
 			}
 			if err != nil || j+1 == len(row) {
-				for _, symbolCoord := range adjacentSymbol {
+				for s := range adjacentSymbol {
 					num := sliceToInt(digits)
-					a[symbolCoord] = append(a[symbolCoord], num)
+					a[s] = append(a[s], num)
 
 				}
 				digits = []int{}
-				adjacentSymbol = []Coord{}
+				adjacentSymbol = map[Coord]struct{}{}
 			}
 		}
 	}
 
-	return total
+	for _, potential := range a {
+		if len(potential) == 2 {
+			total += potential[0] * potential[1]
+		}
+	}
 
+	return total
 }
+
 func sliceToInt(s []int) int {
 	res := 0
 	op := 1
