@@ -7,15 +7,15 @@ import (
 
 func CalculatePartNumSum(schematics string) int {
 	symbols := map[string]struct{}{
-		"#":  struct{}{},
-		"+":  struct{}{},
-		"$":  struct{}{},
-		"*":  struct{}{},
-		"-":  struct{}{},
-		"=":  struct{}{},
-		"/":  struct{}{},
-		"\\": struct{}{},
-		"%":  struct{}{},
+		"#":  {},
+		"+":  {},
+		"$":  {},
+		"*":  {},
+		"-":  {},
+		"=":  {},
+		"/":  {},
+		"\\": {},
+		"%":  {},
 	}
 
 	type Coord struct {
@@ -26,24 +26,28 @@ func CalculatePartNumSum(schematics string) int {
 	var total int
 	schematicsArray := multilineStringTo2DArray(schematics)
 	for i, row := range schematicsArray {
+		digits := []int{}
+		var isSymbolAdjacent bool
 		for j, col := range row {
-			digits := []int{}
 			if v, err := strconv.Atoi(col); err == nil {
 				digits = append(digits, v)
 			} else {
+				if isSymbolAdjacent {
+					total += sliceToInt(digits)
+				}
 				digits = []int{}
+				isSymbolAdjacent = false
 			}
 
-			var isSymbolAdjacent bool
 			adjacentCoords := []Coord{
-				Coord{x: i + 1, y: j},
-				Coord{x: i - 1, y: j},
-				Coord{x: i, y: j - 1},
-				Coord{x: i, y: j + 1},
-				Coord{x: i + 1, y: j + 1},
-				Coord{x: i - 1, y: j + 1},
-				Coord{x: i + 1, y: j - 1},
-				Coord{x: i - 1, y: j - 1},
+				{x: i + 1, y: j},
+				{x: i - 1, y: j},
+				{x: i, y: j - 1},
+				{x: i, y: j + 1},
+				{x: i + 1, y: j + 1},
+				{x: i - 1, y: j + 1},
+				{x: i + 1, y: j - 1},
+				{x: i - 1, y: j - 1},
 			}
 			for _, coord := range adjacentCoords {
 				if coord.x < 0 {
@@ -52,9 +56,13 @@ func CalculatePartNumSum(schematics string) int {
 				if coord.y > len(row) {
 					continue
 				}
-				item := schematicsArray[coord.x][coord.y]
-			}
 
+				item := schematicsArray[coord.x][coord.y]
+				if _, ok := symbols[item]; ok {
+					isSymbolAdjacent = true
+					break
+				}
+			}
 		}
 	}
 

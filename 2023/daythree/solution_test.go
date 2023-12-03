@@ -3,7 +3,7 @@ package daythree_test
 import (
 	"testing"
 
-	"github.com/hmajid2301/advent_of_code/2023/daytwo"
+	"github.com/hmajid2301/advent_of_code/2023/daythree"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +20,7 @@ func TestCalculatePossibleGames(t *testing.T) {
 ...$.*....
 .664.598..`
 
-		value := daytwo.CalculatePossibleGames(results)
+		value := daythree.CalculatePartNumSum(results)
 		assert.Equal(t, value, 4361)
 	})
 }
