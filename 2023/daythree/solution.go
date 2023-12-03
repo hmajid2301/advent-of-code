@@ -1,7 +1,6 @@
 package daythree
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -17,6 +16,8 @@ func CalculatePartNumSum(schematics string) int {
 		"/":  {},
 		"\\": {},
 		"%":  {},
+		"&":  {},
+		"@":  {},
 	}
 
 	type Coord struct {
@@ -26,16 +27,11 @@ func CalculatePartNumSum(schematics string) int {
 
 	var total int
 	schematicsArray := multilineStringTo2DArray(schematics)
+
 	for i, row := range schematicsArray {
 		digits := []int{}
 		var isSymbolAdjacent bool
 		for j, col := range row {
-			fmt.Print(i)
-			fmt.Println("")
-			fmt.Print(j)
-			fmt.Println("")
-			fmt.Println("")
-
 			v, err := strconv.Atoi(col)
 			if err == nil {
 				digits = append(digits, v)
@@ -78,7 +74,63 @@ func CalculatePartNumSum(schematics string) int {
 	return total
 
 }
+func CalculateGearRatio(schematics string) int {
+	type Coord struct {
+		x int
+		y int
+	}
 
+	var total int
+	schematicsArray := multilineStringTo2DArray(schematics)
+
+	a := map[Coord][]int{}
+	for i, row := range schematicsArray {
+		digits := []int{}
+		adjacentSymbol := []Coord{}
+
+		for j, col := range row {
+			v, err := strconv.Atoi(col)
+			if err == nil {
+				digits = append(digits, v)
+				adjacentCoords := []Coord{
+					{x: i + 1, y: j},
+					{x: i - 1, y: j},
+					{x: i, y: j - 1},
+					{x: i, y: j + 1},
+					{x: i + 1, y: j + 1},
+					{x: i - 1, y: j + 1},
+					{x: i + 1, y: j - 1},
+					{x: i - 1, y: j - 1},
+				}
+				for _, coord := range adjacentCoords {
+					if coord.x < 0 || coord.y < 0 {
+						continue
+					}
+					if coord.y+1 > len(schematicsArray) || coord.x+1 > len(row) {
+						continue
+					}
+
+					item := schematicsArray[coord.x][coord.y]
+					if item == "*" {
+						adjacentCoords = append(adjacentCoords, coord)
+					}
+				}
+			}
+			if err != nil || j+1 == len(row) {
+				for _, symbolCoord := range adjacentSymbol {
+					num := sliceToInt(digits)
+					a[symbolCoord] = append(a[symbolCoord], num)
+
+				}
+				digits = []int{}
+				adjacentSymbol = []Coord{}
+			}
+		}
+	}
+
+	return total
+
+}
 func sliceToInt(s []int) int {
 	res := 0
 	op := 1
