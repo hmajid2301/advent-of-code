@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type CategoryMap struct {
@@ -51,6 +52,68 @@ func CalculateMinimumLocation(seedsInfo string) int {
 		}
 		fmt.Println()
 	}
+	return minLoc
+}
+
+func CalculateMinimumLocationSeedRange(seedsInfo string) int {
+	lines := strings.Split(seedsInfo, "\n")
+
+	seedToSoil, lineNum := getMap(lines, 3)
+	soilToFert, lineNum := getMap(lines, lineNum+1)
+	fertToWater, lineNum := getMap(lines, lineNum+1)
+	waterToLight, lineNum := getMap(lines, lineNum+1)
+	lightToTemp, lineNum := getMap(lines, lineNum+1)
+	tempToHumidity, lineNum := getMap(lines, lineNum+1)
+	humidityToLoc, _ := getMap(lines, lineNum+1)
+
+	locationMaps := [][]CategoryMap{
+		seedToSoil,
+		soilToFert,
+		fertToWater,
+		waterToLight,
+		lightToTemp,
+		tempToHumidity,
+		humidityToLoc,
+	}
+
+	seeds := strings.Split(strings.ReplaceAll(lines[0], "seeds: ", ""), " ")
+
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	minLoc := -1
+
+	for i := 0; i < len(seeds); i += 2 {
+		wg.Add(1)
+		start, _ := strconv.Atoi(seeds[i])
+		length, _ := strconv.Atoi(seeds[i+1])
+
+		go func() {
+			defer wg.Done()
+			tempLoc := -1
+
+			for i := 0; i < length; i++ {
+				seed := start + i
+
+				val := seed
+				for _, myMap := range locationMaps {
+					val = getValFromMap(val, myMap)
+				}
+
+				if tempLoc == -1 || val < tempLoc {
+					tempLoc = val
+				}
+			}
+
+			mu.Lock()
+			defer mu.Unlock()
+
+			if minLoc == -1 || tempLoc < minLoc {
+				minLoc = tempLoc
+			}
+		}()
+	}
+
+	wg.Wait()
 	return minLoc
 }
 
