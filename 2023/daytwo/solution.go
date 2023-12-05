@@ -67,10 +67,9 @@ func CalculatePossibleGames(results string) int {
 }
 
 func CalculateMinimumCubes(results string) int {
-
-	lines := strings.Split(results, "\n")
 	var total int
 
+	lines := strings.Split(results, "\n")
 	for _, line := range lines {
 		game := strings.Split(line, ":")
 
