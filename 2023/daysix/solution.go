@@ -11,56 +11,93 @@ func CalculateRaceSum(races string) int {
 
 	timeLine := strings.Split(races, "\n")
 	times := strings.Split(timeLine[0], "Time: ")
-	distances := strings.Split(strings.Split(timeLine[1], "Distance: ")[1], " ")
+	distances := strings.Fields(strings.Trim(strings.Split(timeLine[1], "Distance: ")[1], " "))
 
-	for i, time := range strings.Split(times[1], "") {
-		timeNum, err := strconv.Atoi(time)
+	for i, time := range strings.Fields(times[1]) {
+
+		timeNum, err := strconv.Atoi(strings.Trim(time, " "))
 		if err != nil {
 			panic(err)
 		}
-		minDistance, err := strconv.Atoi(distances[i])
+		minDistance, err := strconv.Atoi(strings.Trim(distances[i], " "))
 		if err != nil {
 			panic(err)
 		}
 
-		var max int
-		var min int
-		rejectedOptions := map[int]struct{}{
-			0:       {},
-			timeNum: {},
+		maxNum := getMax(timeNum, minDistance)
+		minNum := getMin(timeNum, minDistance)
+		if total == 0 {
+			total = maxNum - minNum + 1
+		} else {
+			total *= maxNum - minNum + 1
 		}
-
-		timeHoldingButton := int(math.Floor((float64(timeNum) + 1) / 2))
-		for len(rejectedOptions) != timeNum+1 {
-			distanceCovered := (timeNum - timeHoldingButton) * timeHoldingButton
-
-			if min > max {
-				break
-			}
-
-			if distanceCovered > minDistance {
-				if max == 0 || max < timeHoldingButton {
-					max = timeHoldingButton
-
-				}
-				if min == 0 || min > timeHoldingButton {
-					min = timeHoldingButton
-				}
-
-				_, ok := rejectedOptions[min-1]
-				_, ok1 := rejectedOptions[max+1]
-				if ok && ok1 {
-					break
-				}
-			} else {
-				rejectedOptions[timeHoldingButton] = struct{}{}
-			}
-
-			timeHoldingButton = int(math.Floor((float64(timeNum) + float64(timeHoldingButton)) / 2))
-		}
-
-		total *= max - min + 1
 	}
 
 	return total
+}
+
+func getMin(timeNum, minDistance int) int {
+	var minNum int
+	rejectedOptions := map[int]struct{}{
+		timeNum: {},
+	}
+
+	timeHoldingButton := int(math.Floor((float64(timeNum) + 1) / 2))
+	for len(rejectedOptions) < (timeNum+1)/2 {
+		distanceCovered := (timeNum - timeHoldingButton) * timeHoldingButton
+
+		_, ok1 := rejectedOptions[timeHoldingButton]
+		if ok1 {
+			break
+		}
+
+		if distanceCovered > minDistance {
+			if minNum == 0 || minNum > timeHoldingButton {
+				minNum = timeHoldingButton
+			}
+			_, ok1 := rejectedOptions[minNum-1]
+			if ok1 {
+				break
+			}
+
+			timeHoldingButton = int(math.Floor((float64(0) + float64(timeHoldingButton)) / 2))
+		} else {
+			rejectedOptions[timeHoldingButton] = struct{}{}
+			timeHoldingButton = int(math.Floor((float64(minNum) + float64(timeHoldingButton)) / 2))
+		}
+	}
+	return minNum
+}
+
+func getMax(timeNum, minDistance int) int {
+	var maxNum int
+	rejectedOptions := map[int]struct{}{
+		timeNum: {},
+	}
+
+	timeHoldingButton := int(math.Floor((float64(timeNum) + 1) / 2))
+	for len(rejectedOptions) < (timeNum+1)/2 {
+		distanceCovered := (timeNum - timeHoldingButton) * timeHoldingButton
+
+		_, ok1 := rejectedOptions[timeHoldingButton]
+		if ok1 {
+			break
+		}
+
+		if distanceCovered > minDistance {
+			if maxNum == 0 || maxNum < timeHoldingButton {
+				maxNum = timeHoldingButton
+			}
+			_, ok1 := rejectedOptions[maxNum+1]
+			if ok1 {
+				break
+			}
+
+			timeHoldingButton = int(math.Floor((float64(timeNum) + float64(timeHoldingButton)) / 2))
+		} else {
+			rejectedOptions[timeHoldingButton] = struct{}{}
+			timeHoldingButton = int(math.Floor((float64(maxNum) + float64(timeHoldingButton)) / 2))
+		}
+	}
+	return maxNum
 }
