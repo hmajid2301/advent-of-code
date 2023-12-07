@@ -1,6 +1,7 @@
 package dayseven
 
 import (
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -19,9 +20,9 @@ const (
 
 type Hand struct {
 	Cards map[string]int
-	Bid   int
 	Hand  []int
 	Type  HandType
+	Bid   int
 }
 
 func CalculateWinningTotal(camelCards string) int {
@@ -43,7 +44,7 @@ func CalculateWinningTotal(camelCards string) int {
 		"2": 2,
 	}
 
-	hands := map[HandType][]Hand{}
+	hands := []Hand{}
 	cardLines := strings.Split(camelCards, "\n")
 	for _, cardBid := range cardLines {
 		line := strings.Split(cardBid, " ")
@@ -93,14 +94,33 @@ func CalculateWinningTotal(camelCards string) int {
 					break
 				}
 			}
-			hand.Type = ThreeKind
 		} else if len(cardMap) == 4 {
 			hand.Type = OnePair
 		} else {
 			hand.Type = HighCard
 		}
+		hands = append(hands, hand)
+	}
 
-		hands[hand.Type] = append(hands[hand.Type], hand)
+	sort.Slice(hands, func(i, j int) bool {
+		firstHand := hands[i]
+		secondHand := hands[j]
+
+		if firstHand.Type == secondHand.Type {
+			for x, firstHandCard := range firstHand.Hand {
+				if firstHandCard < secondHand.Hand[x] {
+					return true
+				} else if firstHandCard > secondHand.Hand[x] {
+					return false
+				}
+			}
+		}
+
+		return firstHand.Type > secondHand.Type
+	})
+
+	for i, hand := range hands {
+		total += hand.Bid * (i + 1)
 	}
 
 	return total
