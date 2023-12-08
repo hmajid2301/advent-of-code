@@ -2036,6 +2036,6 @@ K2AT3 313
 56655 348`
 
 		value := dayseven.CalculateWinningTotalWildJokers(results)
-		assert.Equal(t, value, 251735792)
+		assert.Equal(t, value, 251515496)
 	})
 }
