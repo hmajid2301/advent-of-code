@@ -2,22 +2,58 @@ package dayeight
 
 import "strings"
 
-type Node struct {
-	left  *Node
-	right *Node
-	data  string
+func CalculateStepsInRoute(tree string) int {
+	lines := strings.Split(tree, "\n")
+	treeMap := map[string][2]string{}
+	for _, line := range lines[2:] {
+		node := line[0:3]
+		left := line[7:10]
+		right := line[12:15]
+
+		treeMap[node] = [2]string{left, right}
+	}
+
+	var dir = map[string]int{"L": 0, "R": 1}
+
+	path := lines[0]
+	var steps int
+	atNode := "AAA"
+	for atNode != "ZZZ" {
+		for _, route := range strings.Split(path, "") {
+			atNode = treeMap[atNode][dir[route]]
+			steps++
+			if atNode == "ZZZ" {
+				break
+			}
+		}
+	}
+	return steps
 }
 
-func CalculateStartToEnd(tree string) int {
+func CalculateStepsToAllZ(tree string) int {
+	lines := strings.Split(tree, "\n")
+	treeMap := map[string][2]string{}
+	for _, line := range lines[2:] {
+		node := line[0:3]
+		left := line[7:10]
+		right := line[12:15]
+
+		treeMap[node] = [2]string{left, right}
+	}
+
+	var dir = map[string]int{"L": 0, "R": 1}
+
+	path := lines[0]
 	var steps int
-	path := tree[0]
-
-	nodes := []Node{}
-	for _, line := range strings.Split(tree[2:], "\n") {
-		data := strings.Split(line, "=")
-		nodeName := data[0]
-		nextNodes := data[1]
-
+	atNode := "AAA"
+	for atNode != "ZZZ" {
+		for _, route := range strings.Split(path, "") {
+			atNode = treeMap[atNode][dir[route]]
+			steps++
+			if atNode == "ZZZ" {
+				break
+			}
+		}
 	}
 	return steps
 }
