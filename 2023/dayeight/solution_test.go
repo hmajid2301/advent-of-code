@@ -1547,6 +1547,6 @@ DHV = (SXT, TTL)
 NXJ = (JTK, FFF)`
 
 		value := dayeight.CalculateStepsToAllZ(treeStr)
-		assert.Equal(t, value, 21883)
+		assert.Equal(t, value, 12833235391111)
 	})
 }
